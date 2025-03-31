@@ -8,57 +8,48 @@ public class Control {
 
 	Logica logica;
 	Interfaz interfaz;
+	boolean[] comprobaciones;
 
 	public Control() {
 		logica = new Logica();
 		interfaz = new Interfaz();
 	}
-	
+
 	/**
 	 * Bucle del juego
 	 */
 	public void start() {
 
-		boolean fin = false;
 		int columna;
-		boolean colocada;
-		Tablero tablero = logica.iniciarPartida();
-		boolean jugador = true;
-		int turnos = 0;
 
 		do {
 
-			interfaz.mostrarTablero(tablero);
-			columna = interfaz.pedirColumna(jugador);
-			colocada = logica.introducirFicha(columna, tablero, jugador);
-			if (!colocada) {
-				introducirNuevo(colocada, tablero, jugador);
+			interfaz.mostrarTablero(logica.getTablero());
+			columna = interfaz.pedirColumna(logica.getJugador());
+			comprobaciones = logica.introducirFicha(columna);
+			if (!comprobaciones[0]) {
+				introducirNuevo(comprobaciones[0], logica.getTablero());
 
 			}
-			turnos++;
-			if(turnos>4)
-				fin = logica.comprobarFin(jugador);
 
-			if (jugador)
-				jugador = false;
-			else
-				jugador = true;
-
-		} while (!fin);
+		} while (!comprobaciones[1]);
 
 	}
-	
+
 	/**
 	 * 
-	 * @param colocada saber si la ficha ha sido colocada o la columna estaba llena y no se puede meter otra ficha 
-	 * @param tablero tablero de juego
-	 * @param jugador jugador true 1 jugador false 2
+	 * @param colocada saber si la ficha ha sido colocada o la columna estaba llena
+	 *                 y no se puede meter otra ficha
+	 * @param tablero  tablero de juego
+	 * @param jugador  jugador true 1 jugador false 2
+	 * @return
 	 */
-	private void introducirNuevo(boolean colocada, Tablero tablero, boolean jugador) {
+	private void introducirNuevo(boolean colocada, Tablero tablero) {
 		int columna;
 		while (!colocada) {
-			columna = interfaz.pedirNuevo(jugador);
-			colocada = logica.introducirFicha(columna, tablero, jugador);
+			columna = interfaz.pedirNuevo(logica.getJugador());
+			comprobaciones = logica.introducirFicha(columna);
+			colocada = comprobaciones[0];
 
 		}
 

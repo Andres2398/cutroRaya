@@ -1,48 +1,45 @@
 package modelo;
 
 public class Logica {
+	private Tablero tablero;
+	private boolean jugador;
 
-	public Tablero iniciarPartida() {
-		Tablero tablero = new Tablero();
-
-		return tablero;
-
+	public Logica() {
+		tablero = new Tablero();
+		jugador=true;
 	}
+
+	public boolean getJugador() {
+		return jugador;
+	}
+
+	public Tablero getTablero() {
+		return tablero;
+	}
+
 	/**
 	 * Todo pasa por aqui para controlar lo que se envia a control
+	 * 
 	 * @param columna
 	 * @param tablero
 	 * @param jugador
 	 * @return
 	 */
 
-	public boolean introducirFicha(int columna, Tablero tablero, boolean jugador) {
+	public boolean[] introducirFicha(int columna) {
 
-		boolean colocada = tablero.actualizarTablero(columna, jugador);
+		boolean[] comprobaciones = tablero.actualizarTablero(columna, jugador);
+		if (comprobaciones[0])
+			cambiarJugador();
 
-		return colocada;
-
-	}
-
-	public boolean comprobarFin(boolean jugador) {
-		boolean fin;
-		if (jugador == true) {
-			fin = comprobarGanarJugador1();
-		} else
-			fin = comprobarGanarJugador2();
-
-		return fin;
+		return comprobaciones;
 
 	}
 
-	private boolean comprobarGanarJugador1() {
-
-		return false;
+	private void cambiarJugador() {
+		jugador = !jugador;
 	}
 
-	private boolean comprobarGanarJugador2() {
-
-		return false;
-	}
+	
 
 }
