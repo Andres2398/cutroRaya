@@ -76,5 +76,28 @@ public class Interfaz {
 		return columna;
 	}
 
+
+	public void tableroGanador(Tablero tablero, boolean jugador) {
+		jugador=!jugador;
+		for (int i = 0; i < tablero.getFilas(); i++) {
+			for (int j = 0; j < tablero.getColumnas(); j++) {
+				if (tablero.getTablero()[i][j] == 0) {
+					System.out.print("[ ]");
+				} else if (tablero.getTablero()[i][j] == 1) {
+					System.out.print("[X]");
+				}
+				else 
+					System.out.print("[0]");
+			}
+			System.out.println();
+		}
+		if(jugador==true)
+			System.out.println("Felicidades ha ganado el jugador 1");
+		else
+			System.out.println("Felicidades ha ganado el jugador 2");
+		
+		
+	}
+
 	
 }

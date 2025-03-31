@@ -137,17 +137,12 @@ public class Tablero {
 
 	private boolean comprobarGanarColumnas(int tipoFicha, int i, int columna) {
 		int ganar = 0;
-		int j = columna + 1;
+
 		System.out.println(i + "" + columna);
-		while (i >= 0 && tablero[i][columna] == tipoFicha) {
 
+		while (columna + 1 < tablero[0].length - 1 && tablero[i][columna] == tipoFicha) {
 			ganar++;
-			i--;
-
-		}
-		while (j < tablero[0].length - 1 && tablero[i][j] == tipoFicha) {
-			ganar++;
-			j++;
+			columna++;
 		}
 		if (ganar >= 4)
 			return true;
@@ -159,13 +154,13 @@ public class Tablero {
 	public boolean comprobarGanarFilas(int tipoFicha, int i, int columna) {
 
 		int ganar = 0;
-		int j = i + 1;
-		while (i >= 0 && tablero[i][columna] == tipoFicha) {
+		int j = columna + 1;
+		while (columna >= 0 && tablero[i][columna] == tipoFicha) {
 			ganar++;
-			i--;
+			columna--;
 
 		}
-		while (j < tablero[0].length - 1 && tablero[j][columna] == tipoFicha) {
+		while (j < tablero[0].length - 1 && tablero[i][j] == tipoFicha) {
 			ganar++;
 			j++;
 		}

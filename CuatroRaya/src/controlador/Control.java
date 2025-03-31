@@ -21,10 +21,10 @@ public class Control {
 	public void start() {
 
 		int columna;
+		interfaz.mostrarTablero(logica.getTablero());
 
 		do {
 
-			interfaz.mostrarTablero(logica.getTablero());
 			columna = interfaz.pedirColumna(logica.getJugador());
 			comprobaciones = logica.introducirFicha(columna);
 			if (!comprobaciones[0]) {
@@ -32,6 +32,10 @@ public class Control {
 
 			}
 
+			if (comprobaciones[1] == true) {
+				interfaz.tableroGanador(logica.getTablero(), logica.getJugador());
+			} else
+				interfaz.mostrarTablero(logica.getTablero());
 		} while (!comprobaciones[1]);
 
 	}
