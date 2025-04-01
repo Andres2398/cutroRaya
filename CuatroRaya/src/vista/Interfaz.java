@@ -34,7 +34,8 @@ public class Interfaz {
 	 * @return
 	 */
 	public int pedirColumna(boolean jugador) {
-
+		boolean correcto = false;
+		int columna = 0;
 		if (jugador)
 			System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
 		else
@@ -42,23 +43,19 @@ public class Interfaz {
 
 		sc = new Scanner(System.in);
 		String caracteres = sc.nextLine();
-		boolean correcto = true;
-		int i = caracteres.length() - 1;
-		int columna = 0;
-		;
-		int multiplicar = 1;
-		while (correcto && i <= 0) {
-			correcto = comprobarCaracteres(caracteres.charAt(i));
-			if (correcto) {
-				columna += (int) caracteres.charAt(i) * multiplicar;
-			}
+		correcto = comprobarCaracteres(caracteres, jugador);
+
+		while (!correcto) {
+			if (jugador)
+				System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
 			else
-				pedirColumna(jugador);
-			i--;
+				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
+
+			caracteres = sc.nextLine();
+			correcto = comprobarCaracteres(caracteres, jugador);
+			System.out.println("Has introducido un caracter invalido");
 
 		}
-		columna = comprobarColumna(columna, jugador);
-
 		return columna;
 	}
 
@@ -66,14 +63,11 @@ public class Interfaz {
 	 * Comprobar si la columna que elige el usuario esta en el juego y en caso de
 	 * que no pedirle otra
 	 */
-	private int comprobarColumna(int columna, boolean jugador) {
-		sc = new Scanner(System.in);
-		while (columna < 0 || columna > 6) {
-			System.out.println("Columna incorrecta, recuerde que solo puede introducir columnas entre 0 y 6");
-			columna = pedirColumna(jugador);
-		}
-
-		return columna;
+	private boolean comprobarColumna(int columna, boolean jugador) {
+		if (columna <= 0 && columna >= 6)
+			return true;
+		else
+			return false;
 
 	}
 
@@ -81,23 +75,39 @@ public class Interfaz {
 	 * En caso de que la columna este llena se le pedira al jugador de nuevo otra
 	 * columna
 	 */
-	public boolean comprobarCaracteres(char columna) {
+	public boolean comprobarCaracteres(String caracteres, boolean jugador) {
 
 		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 
-		boolean correcto = false;
-		{
+		int correcto = 0;
+		int columna = 0;
+		int multiplicar = 1;
+		boolean permitido = false;
 
-			for (int i = 0; i < numeros.length; i++) {
-				if (columna == numeros[i])
-					correcto = true;
+		for (int i = caracteres.length() - 1; i >= 0; i--) {
+			permitido = false;
+			for (int j = 0; j < numeros.length; j++) {
+				if (caracteres.charAt(i) == numeros[j]) {
+					correcto++;
+					permitido = true;
+
+				}
+
+			}
+			if (permitido) {
+				columna += caracteres.charAt(i) - '0' * multiplicar;
+				multiplicar *= 10;
+
 			}
 
 		}
-		if (correcto)
-			return true;
+		System.out.println(caracteres.length());
+		if (correcto == caracteres.length())
+
+			return comprobarColumna(columna, jugador);
 		else
 			return false;
+
 	}
 
 	public int pedirNuevo(boolean jugador) {
@@ -108,7 +118,7 @@ public class Interfaz {
 			System.out.println("Jugador 2, no se ha podido colocar la ficha en esa columna intenta otra");
 		sc = new Scanner(System.in);
 		int columna = sc.nextInt();
-		columna = comprobarColumna(columna, jugador);
+		// columna = comprobarColumna(columna, jugador);
 		return columna;
 	}
 
