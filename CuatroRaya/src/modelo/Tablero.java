@@ -51,7 +51,7 @@ public class Tablero {
 		boolean fin = false;
 		boolean[] comprobaciones = new boolean[2];
 		if (colocada == true) {
-			fin = comprobarGanar(jugador, i, columna);
+			fin = comprobarGanar(jugador, i+1, columna);
 		}
 
 		System.out.println("¿Esta colocada? = " + colocada);
@@ -72,15 +72,15 @@ public class Tablero {
 			tipoFicha = 2;
 
 		fin = comprobarGanarFilas(tipoFicha, i, columna);
-		if (fin == false) {
+		if (!fin) {
 			fin = comprobarGanarColumnas(tipoFicha, i, columna);
-			if (fin == false) {
-				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
-				if (fin == false) {
-					fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
-				}
-
-			}
+//			if (!fin) {
+//				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
+//				if (!fin) {
+//				fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
+//				}
+//
+//			}
 		}
 		System.out.println(fin);
 
@@ -137,12 +137,13 @@ public class Tablero {
 
 	private boolean comprobarGanarColumnas(int tipoFicha, int i, int columna) {
 		int ganar = 0;
-
-		System.out.println(i + "" + columna);
-
-		while (columna + 1 < tablero[0].length - 1 && tablero[i][columna] == tipoFicha) {
+		
+	
+		
+		while (i < tablero.length && tablero[i][columna] == tipoFicha) {
 			ganar++;
-			columna++;
+			i++;
+			
 		}
 		if (ganar >= 4)
 			return true;
@@ -155,14 +156,11 @@ public class Tablero {
 
 		int ganar = 0;
 		int j = columna + 1;
-		while (columna >= 0 && tablero[i][columna] == tipoFicha) {
+		while (columna <  tablero[0].length && tablero[i][columna] == tipoFicha || (j > 0 && tablero[i][j] == tipoFicha)) {
 			ganar++;
-			columna--;
+			columna++;
+			j--;
 
-		}
-		while (j < tablero[0].length - 1 && tablero[i][j] == tipoFicha) {
-			ganar++;
-			j++;
 		}
 		if (ganar >= 4)
 			return true;
