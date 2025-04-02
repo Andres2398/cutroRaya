@@ -74,13 +74,13 @@ public class Tablero {
 		fin = comprobarGanarFilas(tipoFicha, i, columna);
 		if (!fin) {
 			fin = comprobarGanarColumnas(tipoFicha, i, columna);
-//			if (!fin) {
-//				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
-//				if (!fin) {
+			if (!fin) {
+				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
+				if (!fin) {
 //				fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
-//				}
-//
-//			}
+				}
+
+			}
 		}
 		System.out.println(fin);
 
@@ -96,38 +96,33 @@ public class Tablero {
 
 		int ganar = 0;
 
-		while (columna - 1 < tablero[0].length && fila - 1 >= 0 && tablero[fila][columna] == 1) {
-			columna++;
+		while (columna >= 0 && fila >= 0 && tablero[fila][columna] == tipoFicha || j < tablero.length && i < tablero.length && tablero[i][j] == 1 ) {
+			ganar++;
+			columna--;
 			fila--;
-			ganar++;
-
-		}
-
-		while (j >= 0 && i < tablero.length && tablero[i][j] == 1) {
-
-			j--;
+			j++; 
 			i++;
-			ganar++;
 		}
-		return false;
+
+		if (ganar >= 4)
+			return true;
+		else
+			return false;
 	}
 
 	private boolean comprobarGanarDiagonalPrin(int tipoFicha, int fila, int columna) {
 		int i = fila;
 		int j = columna;
 		int ganar = 0;
-		while (columna - 1 >= 0 && fila - 1 >= 0 && tablero[fila][columna] == 1) {
+		while (columna >= 0 && fila >= 0 && tablero[fila][columna] == tipoFicha || j < tablero.length && i < tablero.length && tablero[i][j] == 1 ) {
 			ganar++;
 			columna--;
 			fila--;
-
-		}
-
-		while (j < tablero[0].length && i < tablero.length && tablero[fila + 1][columna + 1] == 1) {
-			ganar++;
 			j++;
 			i++;
+
 		}
+
 		if (ganar >= 4)
 			return true;
 		else

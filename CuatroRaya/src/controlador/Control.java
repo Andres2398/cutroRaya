@@ -21,21 +21,19 @@ public class Control {
 	public void start() {
 
 		int columna;
-		interfaz.mostrarTablero(logica.getTablero());
 
 		do {
 
-			columna = interfaz.pedirColumna(logica.getJugador());
+			columna = interfaz.pedirColumna(logica.getJugador(), logica.getTablero());
 			comprobaciones = logica.introducirFicha(columna);
 			if (!comprobaciones[0]) {
 				introducirNuevo(comprobaciones[0], logica.getTablero());
 
 			}
 
-			if (comprobaciones[1] == true) {
+			if (comprobaciones[1] == true)
 				interfaz.tableroGanador(logica.getTablero(), logica.getJugador());
-			} else
-				interfaz.mostrarTablero(logica.getTablero());
+
 		} while (!comprobaciones[1]);
 
 	}
@@ -51,7 +49,7 @@ public class Control {
 	private void introducirNuevo(boolean colocada, Tablero tablero) {
 		int columna;
 		while (!colocada) {
-			columna = interfaz.pedirNuevo(logica.getJugador());
+			columna = interfaz.pedirNuevo(logica.getJugador(), tablero);
 			comprobaciones = logica.introducirFicha(columna);
 			colocada = comprobaciones[0];
 

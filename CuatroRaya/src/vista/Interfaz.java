@@ -6,13 +6,28 @@ import modelo.Tablero;
 
 public class Interfaz {
 	private Scanner sc;
+	private Tupla tupla;
+	private String comentario;
+
+	public String getComentario() {
+		return comentario;
+	}
+
+	public void setComentario(String comentario) {
+		this.comentario = comentario;
+	}
+
+	public Interfaz() {
+		tupla = new Tupla();
+		comentario = "";
+	}
 
 	/**
 	 * Funcion para mostrar el tablero jugador 1 seran las X y 2 seran los 0
 	 * 
 	 * @param tablero
 	 */
-	public void mostrarTablero(Tablero tablero) {
+	private void mostrarTablero(Tablero tablero) {
 		for (int i = 0; i < tablero.getFilas(); i++) {
 			for (int j = 0; j < tablero.getColumnas(); j++) {
 				if (tablero.getTablero()[i][j] == 0) {
@@ -31,40 +46,44 @@ public class Interfaz {
 	 * Pedirle a cada jugador la columna a la que quiere disparar
 	 * 
 	 * @param jugador
+	 * @param tablero
 	 * @return
 	 */
-	public int pedirColumna(boolean jugador) {
+	public int pedirColumna(boolean jugador, Tablero tablero) {
+		mostrarTablero(tablero);
 		boolean correcto = false;
-		int columna = 0;
+		String caracteres;
+		sc = new Scanner(System.in);
 		if (jugador)
 			System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
 		else
 			System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
-
-		sc = new Scanner(System.in);
-		String caracteres = sc.nextLine();
-		correcto = comprobarCaracteres(caracteres, jugador);
+		caracteres = sc.nextLine();
+		comprobarCaracteres(caracteres, jugador);
+		correcto = tupla.isBuena();
 
 		while (!correcto) {
+			System.out.println("Has introducido un caracter invalido, recuerda solo numeros enteros entre 0 y 6");
 			if (jugador)
 				System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
 			else
 				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
 
 			caracteres = sc.nextLine();
-			correcto = comprobarCaracteres(caracteres, jugador);
-			System.out.println("Has introducido un caracter invalido");
+			comprobarCaracteres(caracteres, jugador);
+			correcto = tupla.isBuena();
 
 		}
-		return columna;
+
+		return tupla.getColumna();
 	}
 
 	/*
 	 * Comprobar si la columna que elige el usuario esta en el juego y en caso de
 	 * que no pedirle otra
 	 */
-	private boolean comprobarColumna(int columna, boolean jugador) {
-		if (columna <= 0 && columna >= 6)
+	private boolean comprobarColumna(int columna) {
+		if (columna >= 0 && columna <= 6)
 			return true;
 		else
 			return false;
@@ -75,7 +94,7 @@ public class Interfaz {
 	 * En caso de que la columna este llena se le pedira al jugador de nuevo otra
 	 * columna
 	 */
-	public boolean comprobarCaracteres(String caracteres, boolean jugador) {
+	public void comprobarCaracteres(String caracteres, boolean jugador) {
 
 		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 
@@ -94,6 +113,7 @@ public class Interfaz {
 				}
 
 			}
+
 			if (permitido) {
 				columna += caracteres.charAt(i) - '0' * multiplicar;
 				multiplicar *= 10;
@@ -101,25 +121,24 @@ public class Interfaz {
 			}
 
 		}
-		System.out.println(caracteres.length());
-		if (correcto == caracteres.length())
 
-			return comprobarColumna(columna, jugador);
-		else
-			return false;
+		if (correcto == caracteres.length()) {
+			tupla.setColumna(columna);
+			tupla.setBuena(comprobarColumna(columna));
+
+		} else
+			tupla.setBuena(false);
 
 	}
 
-	public int pedirNuevo(boolean jugador) {
+	public int pedirNuevo(boolean jugador, Tablero tablero) {
 
 		if (jugador)
 			System.out.println("Jugador 1, no se ha podidio colocar la ficha en esa columna intenta otra");
 		else
 			System.out.println("Jugador 2, no se ha podido colocar la ficha en esa columna intenta otra");
-		sc = new Scanner(System.in);
-		int columna = sc.nextInt();
-		// columna = comprobarColumna(columna, jugador);
-		return columna;
+		pedirColumna(jugador, tablero);
+		return tupla.getColumna();
 	}
 
 	public void tableroGanador(Tablero tablero, boolean jugador) {
