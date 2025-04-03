@@ -51,10 +51,10 @@ public class Tablero {
 		boolean fin = false;
 		boolean[] comprobaciones = new boolean[2];
 		if (colocada == true) {
-			fin = comprobarGanar(jugador, i+1, columna);
+			fin = comprobarGanar(jugador, i + 1, columna);
 		}
 
-		System.out.println("¿Esta colocada? = " + colocada);
+		
 		comprobaciones[0] = colocada;
 		comprobaciones[1] = fin;
 
@@ -77,12 +77,12 @@ public class Tablero {
 			if (!fin) {
 				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
 				if (!fin) {
-//				fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
+					fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
 				}
 
 			}
 		}
-		System.out.println(fin);
+	
 
 		return fin;
 
@@ -90,20 +90,26 @@ public class Tablero {
 
 	private boolean comprobarGanarDiagonalSec(int tipoFicha, int fila, int columna) {
 
-		int i = fila;
+		int i = fila + 1;
 
-		int j = columna;
+		int j = columna - 1;
 
 		int ganar = 0;
 
-		while (columna >= 0 && fila >= 0 && tablero[fila][columna] == tipoFicha || j < tablero.length && i < tablero.length && tablero[i][j] == 1 ) {
+		while (columna < tablero.length && fila >= 0 && tablero[fila][columna] == tipoFicha) {
+			
 			ganar++;
-			columna--;
+			columna++;
 			fila--;
-			j++; 
-			i++;
+
 		}
 
+		while (j >= 0 && i < tablero.length && tablero[i][j] == tipoFicha) {
+			ganar++;
+			
+			j--;
+			i++;
+		}
 		if (ganar >= 4)
 			return true;
 		else
@@ -111,17 +117,23 @@ public class Tablero {
 	}
 
 	private boolean comprobarGanarDiagonalPrin(int tipoFicha, int fila, int columna) {
-		int i = fila;
-		int j = columna;
+		int i = fila + 1;
+		int j = columna + 1;
 		int ganar = 0;
-		while (columna >= 0 && fila >= 0 && tablero[fila][columna] == tipoFicha || j < tablero.length && i < tablero.length && tablero[i][j] == 1 ) {
+		while ((columna >= 0 && fila >= 0 && tablero[fila][columna] == tipoFicha)) {
 			ganar++;
 			columna--;
 			fila--;
-			j++;
-			i++;
+		
 
 		}
+		while (j < tablero[0].length && i < tablero.length && tablero[i][j] == tipoFicha) {
+			ganar++;
+			j++;
+			i++;
+			
+		}
+		
 
 		if (ganar >= 4)
 			return true;
@@ -132,13 +144,11 @@ public class Tablero {
 
 	private boolean comprobarGanarColumnas(int tipoFicha, int i, int columna) {
 		int ganar = 0;
-		
-	
-		
+
 		while (i < tablero.length && tablero[i][columna] == tipoFicha) {
 			ganar++;
 			i++;
-			
+
 		}
 		if (ganar >= 4)
 			return true;
@@ -150,12 +160,20 @@ public class Tablero {
 	public boolean comprobarGanarFilas(int tipoFicha, int i, int columna) {
 
 		int ganar = 0;
-		int j = columna + 1;
-		while (columna <  tablero[0].length && tablero[i][columna] == tipoFicha || (j > 0 && tablero[i][j] == tipoFicha)) {
+		int j = columna - 1;
+		while ((columna < tablero[0].length && tablero[i][columna] == tipoFicha)) {
+			
 			ganar++;
+			
 			columna++;
-			j--;
+			
 
+		}
+		while (j >= 0 && tablero[i][j] == tipoFicha) {
+			
+			ganar++;
+			
+			j--;
 		}
 		if (ganar >= 4)
 			return true;

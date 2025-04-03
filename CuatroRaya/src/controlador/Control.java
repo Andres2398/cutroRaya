@@ -32,8 +32,10 @@ public class Control {
 			}
 
 			if (comprobaciones[1] == true)
-				interfaz.tableroGanador(logica.getTablero(), logica.getJugador());
-
+				interfaz.mostrarTablero(logica.getTablero(), logica.getJugador(), true);
+			// if (logica.getTurnos()==logica.)
+			// tupla
+			logica.cambiarJugador();
 		} while (!comprobaciones[1]);
 
 	}

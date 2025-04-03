@@ -3,10 +3,12 @@ package modelo;
 public class Logica {
 	private Tablero tablero;
 	private boolean jugador;
+	private int turnos;
 
 	public Logica() {
 		tablero = new Tablero();
-		jugador=true;
+		jugador = true;
+		turnos = 0;
 	}
 
 	public boolean getJugador() {
@@ -29,17 +31,25 @@ public class Logica {
 	public boolean[] introducirFicha(int columna) {
 
 		boolean[] comprobaciones = tablero.actualizarTablero(columna, jugador);
-		if (comprobaciones[0])
-			cambiarJugador();
+		if (comprobaciones[0]) {
+			turnos++;
 
-		return comprobaciones;
+		}
+		if (turnos == tablero.getColumnas() * tablero.getFilas() && !comprobaciones[1]) {
+			// tupla empate = true;
+		}
+			
+
+			return comprobaciones;
 
 	}
 
-	private void cambiarJugador() {
+	public int getTurnos() {
+		return turnos;
+	}
+
+	public void cambiarJugador() {
 		jugador = !jugador;
 	}
-
-	
 
 }

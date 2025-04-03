@@ -7,38 +7,80 @@ import modelo.Tablero;
 public class Interfaz {
 	private Scanner sc;
 	private Tupla tupla;
-	private String comentario;
-
-	public String getComentario() {
-		return comentario;
-	}
-
-	public void setComentario(String comentario) {
-		this.comentario = comentario;
-	}
+	private static final String ROJO = "\u001b[31m"; // codigo para colorear el texto rojo
+	private static final String AZUL = "\033[34m"; // codigo para colorear el texto azul
+	private static final String RESET = "\u001B[0m";
+	private static final String VERDE = "\033[32m";
 
 	public Interfaz() {
 		tupla = new Tupla();
-		comentario = "";
+
 	}
 
 	/**
 	 * Funcion para mostrar el tablero jugador 1 seran las X y 2 seran los 0
 	 * 
 	 * @param tablero
+	 * @param fin
+	 * @param jugador
 	 */
-	private void mostrarTablero(Tablero tablero) {
-		for (int i = 0; i < tablero.getFilas(); i++) {
-			for (int j = 0; j < tablero.getColumnas(); j++) {
-				if (tablero.getTablero()[i][j] == 0) {
-					System.out.print("[ ]");
-				} else if (tablero.getTablero()[i][j] == 1) {
-					System.out.print("[X]");
-				} else
-					System.out.print("[0]");
-			}
+	public void mostrarTablero(Tablero tablero, boolean jugador, boolean fin) {
+		for (int i = 0; i < 50; i++) {
 			System.out.println();
 		}
+		for (int i = 0; i < tablero.getColumnas(); i++) {
+			System.out.print( VERDE + "   "+(i+1) + "  " + RESET);
+		}
+		System.out.println();
+		System.out.print("╔");
+		for (int i = 0; i < tablero.getColumnas(); i++) {
+			if (i != tablero.getColumnas() - 1)
+				System.out.print("═════╦");
+			else
+				System.out.print("═════╗");
+
+		}
+		System.out.println();
+
+		for (int i = 0; i < tablero.getFilas(); i++) {
+			System.out.print("║");
+			for (int j = 0; j < tablero.getColumnas(); j++) {
+				if (tablero.getTablero()[i][j] == 1)
+					System.out.print("  " + AZUL + "■" + RESET + "  ║");
+				else if (tablero.getTablero()[i][j] == 2)
+					System.out.print("  " + ROJO + "■" + RESET + "  ║");
+				else
+					System.out.print("  " + " " + "  ║");
+
+			}
+			System.out.println();
+			if (i < tablero.getFilas() - 1) {
+				System.out.print("╠");
+				for (int j = 0; j < tablero.getColumnas(); j++) {
+					if (j != tablero.getColumnas() - 1)
+						System.out.print("═════╬");
+					else
+						System.out.print("═════╣");
+				}
+				System.out.println();
+			}
+
+		}
+		System.out.print("╚");
+		for (int i = 0; i < tablero.getColumnas(); i++) {
+			if (i != tablero.getColumnas() - 1)
+				System.out.print("═════╩");
+			else
+				System.out.print("═════╝");
+		}
+		if (fin) {
+			System.out.println();
+			if (jugador)
+				System.out.println(VERDE + "Felicidades ha ganado el jugador 1");
+			else
+				System.out.println(VERDE + "Felicidades ha ganado el jugador 2");
+		} else
+			System.out.println();
 
 	}
 
@@ -50,7 +92,7 @@ public class Interfaz {
 	 * @return
 	 */
 	public int pedirColumna(boolean jugador, Tablero tablero) {
-		mostrarTablero(tablero);
+		mostrarTablero(tablero, jugador, false);
 		boolean correcto = false;
 		String caracteres;
 		sc = new Scanner(System.in);
@@ -59,7 +101,7 @@ public class Interfaz {
 		else
 			System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
 		caracteres = sc.nextLine();
-		comprobarCaracteres(caracteres, jugador);
+		comprobarCaracteres(caracteres, jugador, tablero);
 		correcto = tupla.isBuena();
 
 		while (!correcto) {
@@ -69,32 +111,16 @@ public class Interfaz {
 			else
 				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
 
-			caracteres = sc.nextLine();
-			comprobarCaracteres(caracteres, jugador);
+			caracteres = sc.next();
+			comprobarCaracteres(caracteres, jugador, tablero);
 			correcto = tupla.isBuena();
 
 		}
-
-		return tupla.getColumna();
+		
+		return tupla.getColumna() - 1;
 	}
 
-	/*
-	 * Comprobar si la columna que elige el usuario esta en el juego y en caso de
-	 * que no pedirle otra
-	 */
-	private boolean comprobarColumna(int columna) {
-		if (columna >= 0 && columna <= 6)
-			return true;
-		else
-			return false;
-
-	}
-
-	/*
-	 * En caso de que la columna este llena se le pedira al jugador de nuevo otra
-	 * columna
-	 */
-	public void comprobarCaracteres(String caracteres, boolean jugador) {
+	public void comprobarCaracteres(String caracteres, boolean jugador, Tablero tablero) {
 
 		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 
@@ -124,7 +150,10 @@ public class Interfaz {
 
 		if (correcto == caracteres.length()) {
 			tupla.setColumna(columna);
-			tupla.setBuena(comprobarColumna(columna));
+			if (columna >= 1 && columna <= tablero.getColumnas())
+				tupla.setBuena(true);
+			else
+				tupla.setBuena(false);
 
 		} else
 			tupla.setBuena(false);
