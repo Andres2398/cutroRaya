@@ -167,7 +167,7 @@ public class Interfaz {
 		else
 			System.out.println("Jugador 2, no se ha podido colocar la ficha en esa columna intenta otra");
 		pedirColumna(jugador, tablero);
-		return tupla.getColumna();
+		return tupla.getColumna()-1;
 	}
 
 	public void tableroGanador(Tablero tablero, boolean jugador) {
