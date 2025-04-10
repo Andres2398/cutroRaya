@@ -3,7 +3,9 @@ package vista;
 import java.util.Scanner;
 
 import modelo.Tablero;
-
+/**
+ * Clase interfaz que se dedicara a toda la comunicacion con el usuario desde mostrar el tablero a pedir al usuario donde quiere introducir la ficha
+ */
 public class Interfaz {
 	private Scanner sc;
 	private Tupla tupla;
@@ -11,7 +13,9 @@ public class Interfaz {
 	private static final String AZUL = "\033[34m"; // codigo para colorear el texto azul
 	private static final String RESET = "\u001B[0m";
 	private static final String VERDE = "\033[32m";
-
+	/**
+	 * Constructor de la clase interfaz donde inicamos un objeto tupla
+	 */
 	public Interfaz() {
 		tupla = new Tupla();
 
@@ -119,6 +123,13 @@ public class Interfaz {
 		
 		return tupla.getColumna() - 1;
 	}
+	
+	/**
+	 * Metodo para comprobar que los caracteres introducidos por el usuario son correctos, todo se guardara en las variables de la clase tupla
+	 * @param caracteres Son los caracteres introducidos por el usuario
+	 * @param jugador True jugador 1, False Jugador 2
+	 * @param tablero Tablero de juego
+	 */
 
 	public void comprobarCaracteres(String caracteres, boolean jugador, Tablero tablero) {
 
@@ -159,7 +170,12 @@ public class Interfaz {
 			tupla.setBuena(false);
 
 	}
-
+	/**
+	 * Metodo que se llama si la columna donde queria introducir el usuario una ficha estaba llena
+	 * @param jugador true jugador 1, false jugador 2
+	 * @param tablero tablero de juego
+	 * @return la nueva columna introducida por el usuario
+	 */
 	public int pedirNuevo(boolean jugador, Tablero tablero) {
 
 		if (jugador)
@@ -169,7 +185,11 @@ public class Interfaz {
 		pedirColumna(jugador, tablero);
 		return tupla.getColumna()-1;
 	}
-
+	/**
+	 * Metodo para mostrar el ultimo tablero y el mensaje de victoria
+	 * @param tablero tablero de juego
+	 * @param jugador true 1, false 2, para saber a quien darle el mensaje de victoria
+	 */
 	public void tableroGanador(Tablero tablero, boolean jugador) {
 		jugador = !jugador;
 		for (int i = 0; i < tablero.getFilas(); i++) {

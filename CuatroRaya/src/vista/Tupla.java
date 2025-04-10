@@ -1,5 +1,7 @@
 package vista;
-
+/**
+ * 
+ */
 public class Tupla {
 	int columna;
 	boolean buena;
