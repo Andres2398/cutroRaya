@@ -3,8 +3,8 @@ package vista;
  * 
  */
 public class Tupla {
-	int columna;
-	boolean buena;
+	private int columna;
+	private boolean buena;
 	
 	
 	

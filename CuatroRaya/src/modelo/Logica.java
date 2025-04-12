@@ -28,19 +28,18 @@ public class Logica {
 	 * @return
 	 */
 
-	public boolean[] introducirFicha(int columna) {
+	public TuplaModelo introducirFicha(int columna) {
 
-		boolean[] comprobaciones = tablero.actualizarTablero(columna, jugador);
-		if (comprobaciones[0]) {
+		TuplaModelo tupla = tablero.actualizarTablero(columna, jugador);
+		if (tupla.isColocoada()) {
 			turnos++;
 
 		}
-		if (turnos == tablero.getColumnas() * tablero.getFilas() && !comprobaciones[1]) {
-			// tupla empate = true;
-		}
-			
 
-			return comprobaciones;
+		if (turnos == tablero.getColumnas() * tablero.getFilas() && !tupla.isFin())
+			tupla.setEmpate(true);
+
+		return tupla;
 
 	}
 
@@ -50,6 +49,11 @@ public class Logica {
 
 	public void cambiarJugador() {
 		jugador = !jugador;
+	}
+
+	public void intoducirTamañoTablero(int filas, int columnas) {
+		int[][] tablero = new int[filas][columnas];
+		this.tablero.setTablero(tablero);
 	}
 
 }

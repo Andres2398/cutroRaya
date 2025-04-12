@@ -2,17 +2,22 @@ package controlador;
 
 import modelo.Logica;
 import modelo.Tablero;
+import modelo.TuplaModelo;
 import vista.Interfaz;
+import vista.TuplaDificultad;
 
 public class Control {
 
 	Logica logica;
 	Interfaz interfaz;
-	boolean[] comprobaciones;
+	TuplaModelo tupla;
+	TuplaDificultad tuplaDificultad;
 
 	public Control() {
 		logica = new Logica();
 		interfaz = new Interfaz();
+		tupla = new TuplaModelo();
+		tuplaDificultad = new TuplaDificultad();
 	}
 
 	/**
@@ -21,39 +26,46 @@ public class Control {
 	public void start() {
 
 		int columna;
-
+		tuplaDificultad = interfaz.elegirTamañoTablero();
+		logica.intoducirTamañoTablero(tuplaDificultad.getFilas(),tuplaDificultad.getColumnas());
 		do {
 
 			columna = interfaz.pedirColumna(logica.getJugador(), logica.getTablero());
-			comprobaciones = logica.introducirFicha(columna);
-			if (!comprobaciones[0]) {
-				introducirNuevo(comprobaciones[0], logica.getTablero());
+			tupla = logica.introducirFicha(columna);
+			if (!tupla.isColocoada()) {
+				introducirNuevo(logica.getTablero());
 
 			}
 
-			if (comprobaciones[1] == true)
-				interfaz.mostrarTablero(logica.getTablero(), logica.getJugador(), true);
-			// if (logica.getTurnos()==logica.)
-			// tupla
+			if (tupla.isFin()) {
+				interfaz.mostrarTablero(logica.getTablero());
+				interfaz.victoria(logica.getJugador());
+			}
+
+			if (tupla.isEmpate()) {
+				tupla.setFin(true);
+				interfaz.mostrarTablero(logica.getTablero());
+				interfaz.empate();
+
+			}
+			
+			interfaz.retrocederTurnos(logica.getTurnos());
 			logica.cambiarJugador();
-		} while (!comprobaciones[1]);
+		} while (!tupla.isFin());
 
 	}
 
 	/**
 	 * 
-	 * @param colocada saber si la ficha ha sido colocada o la columna estaba llena
-	 *                 y no se puede meter otra ficha
-	 * @param tablero  tablero de juego
-	 * @param jugador  jugador true 1 jugador false 2
+	 * @param tablero tablero de juego
+	 * @param jugador jugador true 1 jugador false 2
 	 * @return
 	 */
-	private void introducirNuevo(boolean colocada, Tablero tablero) {
+	private void introducirNuevo(Tablero tablero) {
 		int columna;
-		while (!colocada) {
+		while (!tupla.isColocoada()) {
 			columna = interfaz.pedirNuevo(logica.getJugador(), tablero);
-			comprobaciones = logica.introducirFicha(columna);
-			colocada = comprobaciones[0];
+			tupla = logica.introducirFicha(columna);
 
 		}
 

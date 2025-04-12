@@ -3,8 +3,10 @@ package vista;
 import java.util.Scanner;
 
 import modelo.Tablero;
+
 /**
- * Clase interfaz que se dedicara a toda la comunicacion con el usuario desde mostrar el tablero a pedir al usuario donde quiere introducir la ficha
+ * Clase interfaz que se dedicara a toda la comunicacion con el usuario desde
+ * mostrar el tablero a pedir al usuario donde quiere introducir la ficha
  */
 public class Interfaz {
 	private Scanner sc;
@@ -13,12 +15,15 @@ public class Interfaz {
 	private static final String AZUL = "\033[34m"; // codigo para colorear el texto azul
 	private static final String RESET = "\u001B[0m";
 	private static final String VERDE = "\033[32m";
+	private TuplaDificultad tuplaDificultad;
+
 	/**
 	 * Constructor de la clase interfaz donde inicamos un objeto tupla
 	 */
 	public Interfaz() {
 		tupla = new Tupla();
-
+		sc = new Scanner(System.in);
+		tuplaDificultad = new TuplaDificultad();
 	}
 
 	/**
@@ -28,12 +33,15 @@ public class Interfaz {
 	 * @param fin
 	 * @param jugador
 	 */
-	public void mostrarTablero(Tablero tablero, boolean jugador, boolean fin) {
+	public void mostrarTablero(Tablero tablero) {
 		for (int i = 0; i < 50; i++) {
 			System.out.println();
 		}
 		for (int i = 0; i < tablero.getColumnas(); i++) {
-			System.out.print( VERDE + "   "+(i+1) + "  " + RESET);
+			if (i < 10)
+				System.out.print(VERDE + "   " + (i + 1) + "  " + RESET);
+			else
+				System.out.print(VERDE + "  " + (i + 1) + "  " + RESET);
 		}
 		System.out.println();
 		System.out.print("╔");
@@ -77,14 +85,7 @@ public class Interfaz {
 			else
 				System.out.print("═════╝");
 		}
-		if (fin) {
-			System.out.println();
-			if (jugador)
-				System.out.println(VERDE + "Felicidades ha ganado el jugador 1");
-			else
-				System.out.println(VERDE + "Felicidades ha ganado el jugador 2");
-		} else
-			System.out.println();
+		System.out.println();
 
 	}
 
@@ -96,16 +97,16 @@ public class Interfaz {
 	 * @return
 	 */
 	public int pedirColumna(boolean jugador, Tablero tablero) {
-		mostrarTablero(tablero, jugador, false);
+		mostrarTablero(tablero);
 		boolean correcto = false;
 		String caracteres;
-		sc = new Scanner(System.in);
+
 		if (jugador)
 			System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
 		else
 			System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
 		caracteres = sc.nextLine();
-		comprobarCaracteres(caracteres, jugador, tablero);
+		comprobarCaracteres(caracteres, tablero);
 		correcto = tupla.isBuena();
 
 		while (!correcto) {
@@ -116,22 +117,24 @@ public class Interfaz {
 				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
 
 			caracteres = sc.next();
-			comprobarCaracteres(caracteres, jugador, tablero);
+			comprobarCaracteres(caracteres, tablero);
 			correcto = tupla.isBuena();
 
 		}
-		
+
 		return tupla.getColumna() - 1;
 	}
-	
+
 	/**
-	 * Metodo para comprobar que los caracteres introducidos por el usuario son correctos, todo se guardara en las variables de la clase tupla
+	 * Metodo para comprobar que los caracteres introducidos por el usuario son
+	 * correctos, todo se guardara en las variables de la clase tupla
+	 * 
 	 * @param caracteres Son los caracteres introducidos por el usuario
-	 * @param jugador True jugador 1, False Jugador 2
-	 * @param tablero Tablero de juego
+	 * @param jugador    True jugador 1, False Jugador 2
+	 * @param tablero    Tablero de juego
 	 */
 
-	public void comprobarCaracteres(String caracteres, boolean jugador, Tablero tablero) {
+	public void comprobarCaracteres(String caracteres, Tablero tablero) {
 
 		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 
@@ -152,7 +155,7 @@ public class Interfaz {
 			}
 
 			if (permitido) {
-				columna += caracteres.charAt(i) - '0' * multiplicar;
+				columna += (caracteres.charAt(i) - '0') * multiplicar;
 				multiplicar *= 10;
 
 			}
@@ -170,8 +173,11 @@ public class Interfaz {
 			tupla.setBuena(false);
 
 	}
+
 	/**
-	 * Metodo que se llama si la columna donde queria introducir el usuario una ficha estaba llena
+	 * Metodo que se llama si la columna donde queria introducir el usuario una
+	 * ficha estaba llena
+	 * 
 	 * @param jugador true jugador 1, false jugador 2
 	 * @param tablero tablero de juego
 	 * @return la nueva columna introducida por el usuario
@@ -183,12 +189,15 @@ public class Interfaz {
 		else
 			System.out.println("Jugador 2, no se ha podido colocar la ficha en esa columna intenta otra");
 		pedirColumna(jugador, tablero);
-		return tupla.getColumna()-1;
+		return tupla.getColumna() - 1;
 	}
+
 	/**
 	 * Metodo para mostrar el ultimo tablero y el mensaje de victoria
+	 * 
 	 * @param tablero tablero de juego
-	 * @param jugador true 1, false 2, para saber a quien darle el mensaje de victoria
+	 * @param jugador true 1, false 2, para saber a quien darle el mensaje de
+	 *                victoria
 	 */
 	public void tableroGanador(Tablero tablero, boolean jugador) {
 		jugador = !jugador;
@@ -210,4 +219,170 @@ public class Interfaz {
 
 	}
 
+	public void empate() {
+		System.out.println("No quedan jugadas posibles hay un empate");
+
+	}
+
+	public void victoria(boolean jugador) {
+		if (jugador)
+			System.out.println(VERDE + "Felicidades ha ganado el jugador 1");
+		else
+			System.out.println(VERDE + "Felicidades ha ganado el jugador 2");
+
+	}
+
+	public TuplaDificultad elegirTamañoTablero() {
+		System.out.println(
+				"Selecciona el tamaño del tablero\n1 Pequeño: 6X7\n2 Mediano: 8X9\n3 Grande: 10X11 \n4 Personalizado");
+		String input = sc.nextLine();
+		while (!comprobarTamaño(input)) {
+			System.out.println("Has seleccionado un caracter incorrecto");
+			System.out.println(
+					"Selecciona el tamaño del tablero\n1: Pequeño (6X7)\n2 Mediano: 8X9\n3 Grande: 10X11 \n4 Personalizado");
+			input = sc.nextLine();
+		}
+
+		return tuplaDificultad;
+	}
+
+	private boolean comprobarTamaño(String input) {
+		if (input.length() > 1)
+
+			return false;
+		if (input.charAt(0) - '0' == 1 || input.charAt(0) - '0' == 2 || input.charAt(0) - '0' == 3
+				|| input.charAt(0) - '0' == 4) {
+
+			if (input.charAt(0) - '0' == 1) {
+				tuplaDificultad.setFilas(6);
+				tuplaDificultad.setColumnas(7);
+			} else if (input.charAt(0) - '0' == 2) {
+				tuplaDificultad.setFilas(8);
+				tuplaDificultad.setColumnas(9);
+
+			} else if (input.charAt(0) - '0' == 3) {
+				tuplaDificultad.setFilas(10);
+				tuplaDificultad.setColumnas(11);
+
+			} else if (input.charAt(0) - '0' == 4) {
+				pedirDificultadPersonalizada();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private void pedirDificultadPersonalizada() {
+		System.out.println(
+				"Elige la cantidad de filas que tendra la matriz, recuerda que lo minimo posible sera 4 filas y lo maximo de 15");
+		String input = sc.nextLine();
+		while (!comprobarTamañoPersonalizadas(input, 20)) {
+			System.out.println("Has seleccionado un caracter incorrecto");
+			System.out.println(
+					"Elige la cantidad de filas que tendra la matriz, recuerda que lo minimo posible sera 4 filas y lo maximo de 15");
+			input = sc.nextLine();
+		}
+		System.out.println(
+				"Elige la cantidad de columnas que tendra la matriz, recuerda que lo minimo posible sera 4 filas y lo maximo de 20");
+		input = sc.nextLine();
+		while (!comprobarTamañoPersonalizadas(input, 40)) {
+			System.out.println("Has seleccionado un caracter incorrecto");
+			System.out.println(
+					"Elige la cantidad de filas que tendra la matriz, recuerda que lo minimo posible sera 4 filas y lo maximo de 20");
+			input = sc.nextLine();
+		}
+	}
+
+	private boolean comprobarTamañoPersonalizadas(String input, int tamano) {
+
+		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+
+		int correcto = 0;
+		int numeroInput = 0;
+		int multiplicar = 1;
+		boolean permitido = false;
+
+		for (int i = input.length() - 1; i >= 0; i--) {
+			permitido = false;
+			for (int j = 0; j < numeros.length; j++) {
+				if (input.charAt(i) == numeros[j]) {
+					correcto++;
+					permitido = true;
+
+				}
+
+			}
+
+			if (permitido) {
+				numeroInput += (input.charAt(i) - '0') * multiplicar;
+				multiplicar *= 10;
+
+			}
+
+		}
+		if (correcto == input.length()) {
+			if (numeroInput <= tamano) {
+				if (tamano == 20)
+					tuplaDificultad.setFilas(numeroInput);
+				else
+					tuplaDificultad.setColumnas(numeroInput);
+				return true;
+			}
+		}
+		return false;
+
+	}
+
+	public void preguntarRetrocederTurnos(int turnos) {
+		System.out.println("Quieres retroceder turnos");
+		System.out.println("Selecciona\n1 para retroceder \ncualquier otra tecla para seguir");
+		String input = sc.nextLine();
+
+		if (input.equals("1"))
+			retrocederTurnos(turnos);
+
+	}
+
+	private void retrocederTurnos(int turnos) {
+		System.out
+				.println("Cuantos turnos quieres retroceder, recuerda hasta ahora se han jugado " + turnos + " turnos");
+		
+		String input = sc.nextLine();
+		while(!comprobarTurnos(input,turnos)) {
+		
+	}
+
+	
+		
+	}
+
+	private boolean comprobarTurnos(String input, int turnos) {
+		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+		int correcto = 0;
+		int numeroInput = 0;
+		int multiplicar = 1;
+		boolean permitido = false;
+
+		for (int i = input.length() - 1; i >= 0; i--) {
+			permitido = false;
+			for (int j = 0; j < numeros.length; j++) {
+				if (input.charAt(i) == numeros[j]) {
+					correcto++;
+					permitido = true;
+
+				}
+
+			}
+
+			if (permitido) {
+				numeroInput += (input.charAt(i) - '0') * multiplicar;
+				multiplicar *= 10;
+
+			}
+
+		}
+		return false;
+	}
 }

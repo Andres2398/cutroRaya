@@ -1,10 +1,19 @@
 package modelo;
 
+/**
+ * Representa el tablero del juego. Permite insertar fichas y comprobar condiciones de victoria
+ * en filas, columnas y diagonales.
+ */
 public class Tablero {
 	private int[][] tablero;
-
+	private TuplaModelo tupla;
 	public Tablero() {
-		tablero = new int[6][7];
+		tablero = new int[0][0];
+		tupla = new TuplaModelo();
+	}
+	
+	public void setTablero(int[][] tablero) {
+		this.tablero = tablero;
 	}
 
 	// Retorna las filas
@@ -26,10 +35,9 @@ public class Tablero {
 	 * 
 	 * @param columna la columna donde mete la ficha el jugador
 	 * @param jugador que jugador es True 1 False 2
-	 * @return retornaremos 2 booleanos uno para saber si ha metido la ficha y otro
-	 *         para saber si ha ganado
+	 * @return una tupla que indica si se colocó la ficha y si el jugador gano
 	 */
-	public boolean[] actualizarTablero(int columna, boolean jugador) {
+	public TuplaModelo actualizarTablero(int columna, boolean jugador) {
 
 		int i = tablero.length - 1;
 		boolean colocada = false;
@@ -48,46 +56,57 @@ public class Tablero {
 			i--;
 
 		}
-		boolean fin = false;
-		boolean[] comprobaciones = new boolean[2];
-		if (colocada == true) {
-			fin = comprobarGanar(jugador, i + 1, columna);
+	
+		if (colocada) {
+			comprobarGanar(jugador, i + 1, columna);
 		}
 
 		
-		comprobaciones[0] = colocada;
-		comprobaciones[1] = fin;
+	
+		tupla.setColocoada(colocada);
 
-		return comprobaciones;
+		return tupla;
 
 	}
-
-	public boolean comprobarGanar(boolean jugador, int i, int columna) {
+	/**
+	 * Funcion que que se dedica a llamar a diversas funciones para comprobar la victoria en las filas, columnas y diagonales
+	 * @param jugador True si es jugador 1, false si es jugador 2
+	 * @param fila de la ultima ficha que ha puesto el jugador
+	 * @param columna de la ultima ficha que ha puesto el jugador
+	 * 
+	 */
+	public void comprobarGanar(boolean jugador, int fila, int columna) {
 		boolean fin = false;
 		int tipoFicha;
 
-		if (jugador == true) {
+		if (jugador) {
 			tipoFicha = 1;
 		} else
 			tipoFicha = 2;
 
-		fin = comprobarGanarFilas(tipoFicha, i, columna);
+		fin = comprobarGanarFilas(tipoFicha, fila, columna);
 		if (!fin) {
-			fin = comprobarGanarColumnas(tipoFicha, i, columna);
+			fin = comprobarGanarColumnas(tipoFicha, fila, columna);
 			if (!fin) {
-				fin = comprobarGanarDiagonalPrin(tipoFicha, i, columna);
+				fin = comprobarGanarDiagonalPrin(tipoFicha, fila, columna);
 				if (!fin) {
-					fin = comprobarGanarDiagonalSec(tipoFicha, i, columna);
+					fin = comprobarGanarDiagonalSec(tipoFicha, fila, columna);
 				}
 
 			}
 		}
 	
 
-		return fin;
+		tupla.setFin(fin);
 
 	}
-
+	/**
+	 * Funcion que se dedica a comprobar la victoria en las diagonales de abajo izquierda a arriba derecha
+	 * @param tipoFicha int que representa la ficha que ha puesto el jugador 1 para jugador 1 , 2 para jugador 2
+	 * @param fila de la ultima ficha que ha puesto el jugador
+	 * @param columna de la ultima ficha que ha puesto el jugador
+	 * @return true si se ha ganado, false si no
+	 */
 	private boolean comprobarGanarDiagonalSec(int tipoFicha, int fila, int columna) {
 
 		int i = fila + 1;
@@ -96,7 +115,7 @@ public class Tablero {
 
 		int ganar = 0;
 
-		while (columna < tablero.length && fila >= 0 && tablero[fila][columna] == tipoFicha) {
+		while (columna < tablero[0].length && fila >= 0 && tablero[fila][columna] == tipoFicha) {
 			
 			ganar++;
 			columna++;
@@ -115,7 +134,14 @@ public class Tablero {
 		else
 			return false;
 	}
-
+	
+	/**
+	 * Funcion que se dedica a comprobar la victoria en las diagonales de abajo derecha a arriba izquieda
+	 * @param tipoFicha int que representa la ficha que ha puesto el jugador 1 para jugador 1 , 2 para jugador 2
+	 * @param fila de la ultima ficha que ha puesto el jugador
+	 * @param columna de la ultima ficha que ha puesto el jugador
+	 * @return true si se ha ganado, false si no
+	 */
 	private boolean comprobarGanarDiagonalPrin(int tipoFicha, int fila, int columna) {
 		int i = fila + 1;
 		int j = columna + 1;
@@ -141,7 +167,13 @@ public class Tablero {
 			return false;
 
 	}
-
+	/**
+	 * Funcion que se dedica a comprobar la victoria en las columnas de arriba a abajo
+	 * @param tipoFicha int que representa la ficha que ha puesto el jugador 1 para jugador 1 , 2 para jugador 2
+	 * @param fila de la ultima ficha que ha puesto el jugador
+	 * @param columna de la ultima ficha que ha puesto el jugador
+	 * @return true si se ha ganado, false si no
+	 */
 	private boolean comprobarGanarColumnas(int tipoFicha, int i, int columna) {
 		int ganar = 0;
 
@@ -156,7 +188,13 @@ public class Tablero {
 			return false;
 
 	}
-
+	/**
+	 * Funcion que se dedica a comprobar la victoria en las filas de derecha a izquierda o viceversa
+	 * @param tipoFicha int que represnta la ficha que ha puesto el jugador 1 para jugador 1 , 2 para jugador 2
+	 * @param fila de la ultima ficha que ha puesto el jugador
+	 * @param columna de la ultima ficha que ha puesto el jugador
+	 * @return true si se ha ganado, false si no
+	 */
 	public boolean comprobarGanarFilas(int tipoFicha, int i, int columna) {
 
 		int ganar = 0;
