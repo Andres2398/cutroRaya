@@ -94,29 +94,66 @@ public class Interfaz {
 	 * 
 	 * @param jugador
 	 * @param tablero
+	 * @param turnos
+	 * @param repetido 
 	 * @return
 	 */
-	public int pedirColumna(boolean jugador, Tablero tablero) {
+	public int pedirColumna(boolean jugador, Tablero tablero, int turnos, boolean repetido) {
 		mostrarTablero(tablero);
 		boolean correcto = false;
 		String caracteres;
+		if(repetido) {
+			if (jugador)
+				System.out.println("Jugador 1 no se ha podidio colocar la ficha en esa columna intenta otra");
+			else
+				System.out.println("Jugador 2 no se ha podido colocar la ficha en esa columna intenta otra");
+		}
+			
 
-		if (jugador)
-			System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
-		else
-			System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
+		if (turnos > 4 && !repetido) {
+			if (jugador)
+				System.out.println(
+						"Jugador 1 introduce la columna donde quieres poner la ficha o pulse r para retroceder");
+			else
+				System.out.println(
+						"Jugador 2 introduce la columna donde quieres poner la ficha o pulse r para retroceder");
+
+		} else {
+
+			if (jugador)
+				System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
+			else
+				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
+		}
 		caracteres = sc.nextLine();
+		if (turnos > 4 && (caracteres.equals("r") || caracteres.equals("R"))) {
+			return -1;
+		}
 		comprobarCaracteres(caracteres, tablero);
 		correcto = tupla.isBuena();
 
 		while (!correcto) {
 			System.out.println("Has introducido un caracter invalido, recuerda solo numeros enteros entre 0 y 6");
-			if (jugador)
-				System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
-			else
-				System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
+			if (turnos > 4) {
+				if (jugador)
+					System.out.println(
+							"Jugador 1 introduce la columna donde quieres poner la ficha o pulse r para retroceder");
+				else
+					System.out.println(
+							"Jugador 2 introduce la columna donde quieres poner la ficha o pulse r para retroceder");
 
-			caracteres = sc.next();
+			} else {
+
+				if (jugador)
+					System.out.println("Jugador 1 introduce la columna donde quieres poner la ficha");
+				else
+					System.out.println("Jugador 2 introduce la columna donde quieres poner la ficha");
+			}
+
+			caracteres = sc.nextLine();
+			if (turnos > 4 && (caracteres.equals("r") || caracteres.equals("R"))) {
+				return -1;
+			}
 			comprobarCaracteres(caracteres, tablero);
 			correcto = tupla.isBuena();
 
@@ -180,15 +217,11 @@ public class Interfaz {
 	 * 
 	 * @param jugador true jugador 1, false jugador 2
 	 * @param tablero tablero de juego
+	 * @param turnos
 	 * @return la nueva columna introducida por el usuario
 	 */
-	public int pedirNuevo(boolean jugador, Tablero tablero) {
-
-		if (jugador)
-			System.out.println("Jugador 1, no se ha podidio colocar la ficha en esa columna intenta otra");
-		else
-			System.out.println("Jugador 2, no se ha podido colocar la ficha en esa columna intenta otra");
-		pedirColumna(jugador, tablero);
+	public int pedirNuevo(boolean jugador, Tablero tablero, int turnos) {
+		pedirColumna(jugador, tablero, turnos, true);
 		return tupla.getColumna() - 1;
 	}
 
@@ -218,20 +251,29 @@ public class Interfaz {
 			System.out.println("Felicidades ha ganado el jugador 2");
 
 	}
-
+	/**
+	 * mensaje que ocurre en caso de empate
+	 */
 	public void empate() {
 		System.out.println("No quedan jugadas posibles hay un empate");
 
 	}
-
-	public void victoria(boolean jugador) {
+	/**
+	 * mensaje que se muestra al ganar la partida
+	 * @param jugador el jugador que ha ganado
+	 * @param turnos la cantidad de turnos jugados
+	 */
+	public void victoria(boolean jugador, int turnos) {
 		if (jugador)
-			System.out.println(VERDE + "Felicidades ha ganado el jugador 1");
+			System.out.println(VERDE + "Felicidades ha ganado el jugador 1, se han jugado " + turnos + " turnos");
 		else
-			System.out.println(VERDE + "Felicidades ha ganado el jugador 2");
+			System.out.println(VERDE + "Felicidades ha ganado el jugador 2 se han jugado" + turnos + " turnos3");
 
 	}
-
+	/**
+	 * Metodo para elegir el tamaño del tablero 
+	 * @return objeto tupla con el tamaño de la matriz
+	 */
 	public TuplaDificultad elegirTamañoTablero() {
 		System.out.println(
 				"Selecciona el tamaño del tablero\n1 Pequeño: 6X7\n2 Mediano: 8X9\n3 Grande: 10X11 \n4 Personalizado");
@@ -245,11 +287,16 @@ public class Interfaz {
 
 		return tuplaDificultad;
 	}
-
+	
+	/**
+	 * Comprobar que lo ingresaado por el usuario es correcto
+	 * @param input entrada del usuario
+	 * @return true si es correcto la entrada, false si no
+	 */
 	private boolean comprobarTamaño(String input) {
 		if (input.length() > 1)
-
 			return false;
+		
 		if (input.charAt(0) - '0' == 1 || input.charAt(0) - '0' == 2 || input.charAt(0) - '0' == 3
 				|| input.charAt(0) - '0' == 4) {
 
@@ -273,7 +320,10 @@ public class Interfaz {
 
 		return false;
 	}
-
+	/**
+	 * Metodo para pedir una dificultad personalizada dentro de unos limites, la dificultad sera el tamaño 
+	 * de la matriz
+	 */
 	private void pedirDificultadPersonalizada() {
 		System.out.println(
 				"Elige la cantidad de filas que tendra la matriz, recuerda que lo minimo posible sera 4 filas y lo maximo de 15");
@@ -335,29 +385,35 @@ public class Interfaz {
 
 	}
 
-	public void preguntarRetrocederTurnos(int turnos) {
-		System.out.println("Quieres retroceder turnos");
-		System.out.println("Selecciona\n1 para retroceder \ncualquier otra tecla para seguir");
-		String input = sc.nextLine();
+	/**
+	 * Metodo para pedir cuantos turnos retroceder
+	 * @param turnos cantidad de turnos que se han jugado
+	 * @return la cantidad de turnos que el usuario quiere retroceder
+	 */
 
-		if (input.equals("1"))
-			retrocederTurnos(turnos);
-
-	}
-
-	private void retrocederTurnos(int turnos) {
+	public int retrocederTurnos(int turnos) {
 		System.out
 				.println("Cuantos turnos quieres retroceder, recuerda hasta ahora se han jugado " + turnos + " turnos");
-		
+
 		String input = sc.nextLine();
-		while(!comprobarTurnos(input,turnos)) {
-		
+		while (!comprobarTurnos(input, turnos)) {
+			System.out.println("Has seleccionado un numero de turnos incorrecto");
+			System.out.println(
+					"Cuantos turnos quieres retroceder, recuerda hasta ahora se han jugado " + turnos + " turnos");
+			input = sc.nextLine();
+		}
+		return tupla.getTurnosRetroceder();
 	}
-
 	
-		
-	}
 
+	/**
+	 * Metodo para depurar la entrada de los turnos que quiere retroceder el usuario 
+	 * @param input la entrada del usuario
+	 * @param turnos cantidad de turnos que se han jugado
+	 * @return true si los turnos que quiere retroceder el usuario son menores o iguales a los turnos jugados
+	 * false si no
+	 */
+	
 	private boolean comprobarTurnos(String input, int turnos) {
 		char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
 		int correcto = 0;
@@ -383,6 +439,11 @@ public class Interfaz {
 			}
 
 		}
+		if (numeroInput <= turnos) {
+			tupla.setTurnosRetroceder(numeroInput);
+			return true;
+		}
 		return false;
+
 	}
 }

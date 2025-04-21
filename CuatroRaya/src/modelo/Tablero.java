@@ -11,7 +11,10 @@ public class Tablero {
 		tablero = new int[0][0];
 		tupla = new TuplaModelo();
 	}
-	
+	/**
+	 * Metodo para establecer el tablero de juego
+	 * @param tablero el tablero a establecer 
+	 */
 	public void setTablero(int[][] tablero) {
 		this.tablero = tablero;
 	}
@@ -219,4 +222,24 @@ public class Tablero {
 			return false;
 
 	}
+	/**
+	 * Metodo para copiar los tableros
+	 * @return el talbero copidado
+	 */
+	public Tablero copiar() {
+	    int filas = tablero.length;
+	    int columnas = tablero[0].length;
+	    int[][] nuevoTablero = new int[filas][columnas];
+
+	    for (int i = 0; i < tablero.length; i++) {
+	        for (int j = 0; j < tablero[0].length; j++) {
+	            nuevoTablero[i][j] = tablero[i][j];
+	        }
+	    }
+
+	    Tablero copia = new Tablero();
+	    copia.setTablero(nuevoTablero);
+	    return copia;
+	}
+	
 }

@@ -27,19 +27,24 @@ public class Control {
 
 		int columna;
 		tuplaDificultad = interfaz.elegirTamañoTablero();
-		logica.intoducirTamañoTablero(tuplaDificultad.getFilas(),tuplaDificultad.getColumnas());
+		logica.intoducirTamañoTablero(tuplaDificultad.getFilas(), tuplaDificultad.getColumnas());
 		do {
 
-			columna = interfaz.pedirColumna(logica.getJugador(), logica.getTablero());
-			tupla = logica.introducirFicha(columna);
-			if (!tupla.isColocoada()) {
-				introducirNuevo(logica.getTablero());
+			columna = interfaz.pedirColumna(logica.getJugador(), logica.getTablero(), logica.getTurnosTablero(),false);
+			if (columna == -1) {
 
+				logica.retrocederTurnos(interfaz.retrocederTurnos(logica.getTurnosTablero()));
+			} else {
+				tupla = logica.introducirFicha(columna);
+				if (!tupla.isColocoada()) {
+					introducirNuevo(logica.getTablero());
+
+				}
 			}
 
 			if (tupla.isFin()) {
 				interfaz.mostrarTablero(logica.getTablero());
-				interfaz.victoria(logica.getJugador());
+				interfaz.victoria(logica.getJugador(),logica.getTurnosPartida());
 			}
 
 			if (tupla.isEmpate()) {
@@ -48,9 +53,8 @@ public class Control {
 				interfaz.empate();
 
 			}
-			
-			interfaz.retrocederTurnos(logica.getTurnos());
 			logica.cambiarJugador();
+
 		} while (!tupla.isFin());
 
 	}
@@ -64,7 +68,7 @@ public class Control {
 	private void introducirNuevo(Tablero tablero) {
 		int columna;
 		while (!tupla.isColocoada()) {
-			columna = interfaz.pedirNuevo(logica.getJugador(), tablero);
+			columna = interfaz.pedirNuevo(logica.getJugador(), tablero, logica.getTurnosTablero());
 			tupla = logica.introducirFicha(columna);
 
 		}
